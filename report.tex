@@ -1,6 +1,7 @@
 \documentclass[12pt]{article}
 \usepackage{ctex}
 \usepackage{geometry}
+\usepackage{amsmath}
 \usepackage{listings}
 \usepackage{xcolor}
 
@@ -79,11 +80,13 @@ numbers=left
 
 1.仅进行一轮检测；
 
-2.总人口数为常数；
+2.病毒携带者等可能地出现在各组中。
 
-3.不考虑在核酸检测结果发布前的新增病例，即携带病毒的人口数为常数；
+3.总人口数为常数；
 
-4.不考虑核酸检测本身的假阴性情况。
+4.不考虑在核酸检测结果发布前的新增病例，即携带病毒的人口数为常数；
+
+5.不考虑核酸检测本身的假阴性情况。
 
 \subsection{符号的说明}
 
@@ -102,6 +105,29 @@ $k$ & 混合检测每组的人数 \\
 \end{table}
 
 \subsection{模型的建立}
+
+记随机变量$X$表示单个人的核酸检测次数。
+由于假设总人口数为常数，
+最小化核酸检测的总次数即最小化单个人的核酸检测次数，
+即最小化$E[X]$。
+
+又由于假设病毒携带者等可能地出现在各组中，
+$n$为总人口数，$m$为携带病毒的人口数，
+可知任意一个人为病毒携带者的概率为$\frac{m}{n}$，
+任意一组核酸检测为阴性的概率为$(1 - \frac{m}{n})^k$。
+进而得到$X$的分布：
+\begin{align*}
+P(X = \frac{1}{k}) &= (1 - \frac{m}{n})^k \\
+P(X = \frac{1}{k} + 1) &= 1 - (1 - \frac{m}{n})^k
+\end{align*}
+
+以及$X$的期望：
+\begin{equation*}
+E[X]
+= \frac{1}{k} (1 - \frac{m}{n})^k + 
+(\frac{1}{k} + 1)(1 - (1 - \frac{m}{n})^k)
+= 1 + \frac{1}{k} - (1 - \frac{m}{n})^k
+\end{equation*}
 
 \subsection{模型的应用}
 
