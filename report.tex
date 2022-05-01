@@ -88,6 +88,8 @@ numbers=left
 
 5.不考虑核酸检测本身的假阴性情况。
 
+6.核酸检测技术可以满足任意大的混合检测每组的人数。
+
 \subsection{符号的说明}
 
 \begin{table}[h]
@@ -129,7 +131,25 @@ E[X]
 = 1 + \frac{1}{k} - (1 - \frac{m}{n})^k
 \end{equation*}
 
+需要最小化上式。
+特别地，当$ m \ll n $时，有
+\begin{equation*}
+E[X] \approx 1 + \frac{1}{k} - (1 - k\frac{m}{n})
+= \frac{1}{k} + k\frac{m}{n}
+\end{equation*}
+
+当$ k = \sqrt{\frac{n}{m}} $时，
+取得最小值$2\sqrt{\frac{m}{n}}$，
+此时总核酸检测次数为$2\sqrt{mn}$，
+且携带病毒的人口比例越高，单个人的核酸检测次数越高，符合预期。
+
 \subsection{模型的应用}
+
+本节将上述模型应用于上海市和吉林省长春市的新冠疫情情况。
+
+根据上海市健康卫生委员会的疫情通告$^{[1]}$，
+最近一轮的上海疫情始于2022年3月1日，每日新增一万左右例病毒携带者。
+再加上近期上海约两天进行一次核酸检测，可设置携带病毒的人口数为两万。
 
 \newpage
 {\centering\section{多轮检测模型}}
@@ -152,7 +172,29 @@ E[X]
 
 2.总人口数为常数。
 
+3.核酸检测技术可以满足任意大的混合检测每组的人数。
+
 \subsection{符号的说明}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|l|} 
+\hline
+符号 & 含义 \\
+\hline
+$n$ & 当前待检测人口数 \\
+$m$ & 当前携带病毒的人口数 \\
+$\mu$ & 假阴性概率 \\
+$\nu$ & 假阳性概率 \\
+$\lambda$ & 一个病毒携带者平均可以将病毒传播给同组检测者的数量 \\
+$\theta$ & 
+一个病毒携带者平均可以将病毒传播给除同组检测者之外的人的数量 \\
+$k$ & 混合检测每组的人数 \\
+\hline
+\end{tabular}
+\caption{多轮检测模型的符号说明}
+\end{table}
+
 
 \subsection{模型的建立}
 
@@ -168,9 +210,9 @@ E[X]
 
 \subsection{模型的推广}
 
-\newpage
-\appendix
 {\centering\section*{参考文献}}
+
+\newpage
 {\centering\section*{附录}}
 
 \end{document}
