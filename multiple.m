@@ -11,12 +11,14 @@ m = 2e4;
 
 mu = 0.2; % 假阴性
 nu = 0.0015; % 假阳性
-lambda = [0.15, 0.15, 0.3];
-% lambda = [0.15, 0.15, 0.45];
-% lambda = [0.15, 0.15, 0.6];
+lambda = [0.25, 0.25, 0.5];
 theta = 0.2;
+% lambda = [0.25, 0.25, 1];
+% theta = 0.3;
+% lambda = [0.25, 0.25, 1.5];
+% theta = 0.4;
 
-rounds = 90;
+rounds = 60;
 records = zeros(rounds, 3);
 
 people = logical(sparse(n, 2));
@@ -41,7 +43,7 @@ for round = 1:rounds
     fprintf('%8d\t%8d\t%8d\t%8d\n', QI, QS, NS, NI);
     
     % 新增感染
-    infect = NI * lambda(1) / NS;
+    infect = lambda(1) * NI / NS;
     for index = 1:n
         if people(index, 1) == 0 && people(index, 2) == 0
             if rand < infect
@@ -96,7 +98,7 @@ for round = 1:rounds
     fprintf('%8d\t%8d\t%8d\t%8d\n', QI, QS, NS, NI);
 
     % 新增感染
-    infect = NI * lambda(2) / NS;
+    infect = lambda(2) * NI / NS;
     for index = 1:n
         if people(index, 1) == 0 && people(index, 2) == 0
             if rand < infect
@@ -127,7 +129,7 @@ for round = 1:rounds
     fprintf('%8d\t%8d\t%8d\t%8d\n', QI, QS, NS, NI);
     
     % 新增感染
-    infect = NI * lambda(3) / NS;
+    infect = lambda(3) * NI / NS;
     for index = 1:n
         if people(index, 1) == 0 && people(index, 2) == 0
             if rand < infect
@@ -139,29 +141,32 @@ for round = 1:rounds
     end
 
     fprintf('%8d\t%8d\t%8d\t%8d\n', QI, QS, NS, NI);
-
+    
+    % 痊愈
     for index = 1:n
-        if people(index, 2) == 1 
-            % 痊愈
-            if people(index, 1) == 1 && rand < theta
-                people(index, 1) = 0;
+        if people(index, 1) == 1 && rand < theta
+            people(index, 1) = 0;
+            if people(index, 2) == 0
+                NI = NI - 1;
+                NS = NS + 1;
+            else
                 QI = QI - 1;
                 QS = QS + 1;
             end
+        end
+    end
 
-            % 单人单管检测
-            if people(index, 1) == 0  % 阴性
-                if rand >= nu  % 真阴性
-                    people(index, 2) = 0;
-                    QS = QS - 1;
-                    NS = NS + 1;
-                end           
-            else  % 阳性
-                if rand < mu  % 假阴性
-                    people(index, 2) = 0;
-                    QI = QI - 1;
-                    NI = NI + 1;
-                end
+    % 单人单管检测
+    for index = 1:n
+        if people(index, 2) == 1
+            if people(index, 1) == 0 && rand >= nu  % 真阴性
+                people(index, 2) = 0;
+                QS = QS - 1;
+                NS = NS + 1;         
+            elseif people(index, 1) == 1 && rand < mu  % 假阴性
+                people(index, 2) = 0;
+                QI = QI - 1;
+                NI = NI + 1;
             end
         end
     end
@@ -170,6 +175,8 @@ for round = 1:rounds
     records(round, 1) = QI;
     records(round, 2) = NI;
     records(round, 3) = k;
+    
+    save('records.mat');
 end
 
 figure;
@@ -184,5 +191,3 @@ plot(records(:, 3));
 title('混合检测每组的人数随时间的变化');
 xlabel('轮数');
 ylabel('混合检测每组的人数');
-
-save('record.mat', 'records');
